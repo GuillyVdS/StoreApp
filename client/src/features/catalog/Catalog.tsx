@@ -13,7 +13,7 @@ export default function Catalog() {
       .then(data => setProducts(data))
   }, [])
 
-    return (
+    return ( 
         <>
             <ProductList products={products}/>
         </>
