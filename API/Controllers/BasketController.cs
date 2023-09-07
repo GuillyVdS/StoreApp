@@ -18,7 +18,7 @@ namespace API.Controllers
         public BasketController(StoreContext context)
         {
             _context = context;
-            
+
         }
 
         [HttpGet(Name = "GetBasket")]
@@ -41,7 +41,7 @@ namespace API.Controllers
 
             var product = await _context.Products.FindAsync(productId);
 
-            if (product == null) return NotFound();
+            if (product == null) return BadRequest(new ProblemDetails { Title = "Product Not Found" });
 
             basket.AddItem(product, quantity);
 
@@ -49,7 +49,7 @@ namespace API.Controllers
 
             if (result) return CreatedAtRoute("GetBasket", MapBasketToDto(basket));
 
-            return BadRequest(new ProblemDetails{Title = "Problem saving item to basket"});
+            return BadRequest(new ProblemDetails { Title = "Problem saving item to basket" });
         }
 
 
@@ -66,7 +66,7 @@ namespace API.Controllers
 
             if (result) return Ok();
             //save changes
-            return BadRequest(new ProblemDetails{Title = "Problem removing item from basket"});
+            return BadRequest(new ProblemDetails { Title = "Problem removing item from basket" });
         }
 
         private async Task<Basket> RetrieveBasket()
@@ -80,9 +80,9 @@ namespace API.Controllers
         private Basket CreateBasket()
         {
             var buyerId = Guid.NewGuid().ToString();
-            var cookieOptions = new CookieOptions{IsEssential = true, Expires = DateTime.Now.AddDays(30)};
+            var cookieOptions = new CookieOptions { IsEssential = true, Expires = DateTime.Now.AddDays(30) };
             Response.Cookies.Append("buyerId", buyerId, cookieOptions);
-            var basket = new Basket{BuyerId = buyerId};
+            var basket = new Basket { BuyerId = buyerId };
             _context.Baskets.Add(basket);
             return basket;
         }
